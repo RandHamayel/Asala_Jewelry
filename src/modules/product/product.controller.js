@@ -29,7 +29,6 @@ export const create = async(req,res)=>{
 
 export const getProducts = async(req,res)=>{
 
-
 	const {skip,limit} = pagination(req.query.page, req.query.limit)
 	let queryObj = {...req.query};
 	const execQuery = ['page','limit'];
@@ -38,16 +37,13 @@ export const getProducts = async(req,res)=>{
 		delete queryObj[ele];
 	})
 
-
     queryObj = JSON.stringify(queryObj);
 
 	queryObj = queryObj.replace(/gte|gt|lt|lte|in|nin|eq/g,match => `$${match}`);
 	queryObj = JSON.parse(queryObj);
 
-
-
 	const mongooseQuery =  productModel.find(queryObj).skip(skip).limit(limit).select('name price');
-	const products = await mongooseQuery.sort('price').select('name price');
+	const products = await mongooseQuery.sort('price').select('name description price categoryId image ');
 	return res.status(200).json({msg: "success", products });
 
 }
